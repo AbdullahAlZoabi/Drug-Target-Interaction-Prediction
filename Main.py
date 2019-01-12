@@ -72,8 +72,36 @@ def DrugBasedPrediction(i,j):
     return Numerator/Denominator;
 
 
-print(DrugBasedPrediction(60,54));
-    
+
+def TargetBasedPrediction(i,j):
+
+    Numerator  = 0;
+
+    Denominator = 0;
+
+    SortedIndices = np.argsort(-TTSimilarity.iloc[j,:]);
+
+    Count = 0;
+
+    for k in range(0, NumOfTargets):
+
+        CurrentIndex = SortedIndices.iloc[k,];
+
+        if CurrentIndex != j:
+
+            Numerator = Numerator + Interactions.iloc[i,CurrentIndex]*TTSimilarity.iloc[j,CurrentIndex];
+
+            Denominator = Denominator + TTSimilarity.iloc[j,CurrentIndex];
+
+            Count = Count + 1;
+
+            if Count == NumOfNeighbours:
+
+                break;
+
+    return Numerator/Denominator;
+
+
 
 
     
