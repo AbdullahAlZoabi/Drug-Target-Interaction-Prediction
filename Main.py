@@ -40,14 +40,7 @@ _NumOfDrugs = _Interactions.shape[0];
 _NumOfTargets = _Interactions.shape[1];
 
 
-_NumOfNeighbours = 68;
-
-
-NewInteractions = _Interactions.copy();
-
-NewInteractions.iloc[0,0] = 10;
-
-print(NewInteractions);
+_NumOfNeighbours = 5;
 
 
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours):
@@ -109,10 +102,35 @@ def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfDrugs,NumOfTargets,
     return Numerator/Denominator;
 
 
+def SimpleWeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours):
 
 
 
-    
+    NewInteractions = _Interactions.copy();
+
+   
+    for i in range(0,NumOfDrugs):
+        for j in range(0,NumOfTargets):
+
+            if Interactions.iloc[i,j] == 0:
+
+                DrugBased = DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours);
+
+                TargetBased = TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours);
+
+                Mean = (DrugBased + TargetBased)/2;
+
+                if Mean >= 0.5:
+
+                    NewInteractions.iloc[i,j] = 1;
+
+    return NewInteractions;
+
+
+
+
+
+SimpleWeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,_NumOfDrugs,_NumOfTargets,_NumOfNeighbours);
 
 
 
