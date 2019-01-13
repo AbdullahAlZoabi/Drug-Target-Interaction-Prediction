@@ -25,25 +25,32 @@ def ReadKinase():
 Data = ReadKinase();
 
 
-DDSimilarity = Data["DDSimilarity"];
+_DDSimilarity = Data["DDSimilarity"];
 
 
-TTSimilarity = Data["TTSimilarity"];
+_TTSimilarity = Data["TTSimilarity"];
 
 
-Interactions = Data["Interactions"];
+_Interactions = Data["Interactions"];
 
 
-NumOfDrugs = Interactions.shape[0];
+_NumOfDrugs = _Interactions.shape[0];
 
 
-NumOfTargets = Interactions.shape[1];
+_NumOfTargets = _Interactions.shape[1];
 
 
-NumOfNeighbours = 68; 
+_NumOfNeighbours = 68;
 
 
-def DrugBasedPrediction(i,j):
+NewInteractions = _Interactions.copy();
+
+NewInteractions.iloc[0,0] = 10;
+
+print(NewInteractions);
+
+
+def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours):
 
     Numerator  = 0;
 
@@ -73,7 +80,7 @@ def DrugBasedPrediction(i,j):
 
 
 
-def TargetBasedPrediction(i,j):
+def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours):
 
     Numerator  = 0;
 
@@ -104,7 +111,6 @@ def TargetBasedPrediction(i,j):
 
 
 
-    
 
     
 
