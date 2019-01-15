@@ -172,6 +172,8 @@ def TTJaccardSimilarity(Interactions,T1,T2,ExcludedDrug):
 
                 Union = Union + 1;
 
+    if Union == 0:
+        return 0;
 
     Similarity = Intersection / Union;
 
@@ -203,12 +205,39 @@ def DDJaccardSimilarity(Interactions,D1,D2,ExcludedTarget):
             if Sum == 1:
 
                 Union = Union + 1;
-
+                
+                
+    if Union == 0:
+        return 0;
 
     Similarity = Intersection / Union;
 
     return Similarity;
 
+
+def DDMatrixJaccardSimilarity(Interactions):
+
+
+    NumOfDrugs = Interactions.shape[0];
+
+
+    DDMatJaccardSimilarity = pd.DataFrame(index=range(0,NumOfDrugs),columns=range(0,NumOfDrugs));
+
+
+    for i in range(0,NumOfDrugs):
+        for j in range(0,NumOfDrugs):
+
+            DDMatJaccardSimilarity.iloc[i,j] = DDJaccardSimilarity(Interactions,i,j,-1);
+            
+   
+
+    return DDMatJaccardSimilarity;
+
+
+
+
+
+print(DDMatrixJaccardSimilarity(_Interactions))
 
 
 
