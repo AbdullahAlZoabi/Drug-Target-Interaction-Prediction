@@ -2,6 +2,10 @@ import pandas as pd
 import numpy as np
 
 
+_NumOfNeighbours = 2;
+
+
+SimpleWeightedProfileThreshold = 0.5;
 
 
 def ReadKinase():
@@ -34,16 +38,14 @@ _TTSimilarity = Data["TTSimilarity"];
 _Interactions = Data["Interactions"];
 
 
-_NumOfDrugs = _Interactions.shape[0];
 
 
-_NumOfTargets = _Interactions.shape[1];
+def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
 
 
-_NumOfNeighbours = 2;
+    NumOfDrugs = _Interactions.shape[0];
 
-
-def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours):
+    NumOfTargets = _Interactions.shape[1];
 
     Numerator  = 0;
 
@@ -73,7 +75,12 @@ def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfDrugs,NumOfTargets,Nu
 
 
 
-def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours):
+def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours):
+
+
+    NumOfDrugs = _Interactions.shape[0];
+
+    NumOfTargets = _Interactions.shape[1];
 
     Numerator  = 0;
 
@@ -101,23 +108,35 @@ def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfDrugs,NumOfTargets,
 
     return Numerator/Denominator;
 
-def SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours):
 
 
-    DrugBased   = DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours);
 
-    TargetBased = TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours);
+def SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+
+
+    NumOfDrugs = _Interactions.shape[0];
+
+    NumOfTargets = _Interactions.shape[1];
+
+    DrugBased   = DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours);
+
+    TargetBased = TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours);
 
     Mean = (DrugBased + TargetBased)/2;
 
-    if Mean >= 0.5:
+    if Mean >= SimpleWeightedProfileThreshold:
 
         return 1;
 
     return 0;
 
 
-def SimpleWeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours):
+def SimpleWeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+
+
+    NumOfDrugs = _Interactions.shape[0];
+
+    NumOfTargets = _Interactions.shape[1];
 
     NewInteractions = _Interactions.copy();
 
@@ -126,25 +145,29 @@ def SimpleWeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfDrugs,NumO
 
             if Interactions.iloc[i,j] == 0:
 
-                Pred = SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfDrugs,NumOfTargets,NumOfNeighbours);
+                Pred = SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours);
 
                 NewInteractions.iloc[i,j] = Pred;
 
     return NewInteractions;
 
 
-PredInteractionsMatrix = SimpleWeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,_NumOfDrugs,_NumOfTargets,_NumOfNeighbours);
+PredInteractionsMatrix = SimpleWeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,_NumOfNeighbours);
 
 
-def LeaveOneOutCrossValidation(DDSimilarity,TTSimilarity,PredInteractionsMatrix,NumOfDrugs,NumOfTargets,NumOfNeighbours):
+def LeaveOneOutCrossValidation(DDSimilarity,TTSimilarity,PredInteractionsMatrix,NumOfNeighbours):
 
+
+    NumOfDrugs = _Interactions.shape[0];
+
+    NumOfTargets = _Interactions.shape[1];
 
     Count = 0;
 
     for i in range(0,NumOfDrugs):
         for j in range(0,NumOfTargets):
 
-            Pred = SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,PredInteractionsMatrix,NumOfDrugs,NumOfTargets,NumOfNeighbours);
+            Pred = SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,PredInteractionsMatrix,NumOfNeighbours);
 
             if PredInteractionsMatrix.iloc[i,j] == Pred:
 
@@ -154,7 +177,7 @@ def LeaveOneOutCrossValidation(DDSimilarity,TTSimilarity,PredInteractionsMatrix,
     return Count;
 
 
-Count = LeaveOneOutCrossValidation(_DDSimilarity,_TTSimilarity,PredInteractionsMatrix,_NumOfDrugs,_NumOfTargets,_NumOfNeighbours);
+Count = LeaveOneOutCrossValidation(_DDSimilarity,_TTSimilarity,PredInteractionsMatrix,_NumOfNeighbours);
 
 print(Count);
 
