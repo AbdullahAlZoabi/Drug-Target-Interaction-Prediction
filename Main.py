@@ -147,13 +147,76 @@ def SimpleWeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours
 
 
 
+def TTJaccardSimilarity(Interactions,T1,T2,ExcludedDrug):
 
 
-PredInteractionsMatrix = SimpleWeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,2,0.5);
+    NumOfDrugs = Interactions.shape[0];
+
+    Intersection = 0;
+
+    Union = 0;
+
+    for i in range(0,NumOfDrugs):
+
+        if i != ExcludedDrug:
+
+            Sum = Interactions.iloc[i,T1] + Interactions.iloc[i,T2];
+
+            if Sum == 2:
+
+                Intersection = Intersection + 1;
+
+                Union = Union + 1;
+
+            if Sum == 1:
+
+                Union = Union + 1;
+
+
+    Similarity = Intersection / Union;
+
+    return Similarity;
 
 
 
-print(PredInteractionsMatrix)
+def DDJaccardSimilarity(Interactions,D1,D2,ExcludedTarget):
+
+
+    NumOfTargets = Interactions.shape[1];
+
+    Intersection = 0;
+
+    Union = 0;
+
+    for i in range(0,NumOfTargets):
+
+        if i != ExcludedTarget:
+
+            Sum = Interactions.iloc[D1,i] + Interactions.iloc[D2,i];
+
+            if Sum == 2:
+
+                Intersection = Intersection + 1;
+
+                Union = Union + 1;
+
+            if Sum == 1:
+
+                Union = Union + 1;
+
+
+    Similarity = Intersection / Union;
+
+    return Similarity;
+
+
+                
+
+#PredInteractionsMatrix = SimpleWeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,2,0.5);
+
+
+
+print(DDJaccardSimilarity(_Interactions,0,0,1))
 
 
             
