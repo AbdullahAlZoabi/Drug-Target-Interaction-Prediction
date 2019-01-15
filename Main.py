@@ -2,11 +2,6 @@ import pandas as pd
 import numpy as np
 
 
-_NumOfNeighbours = 2;
-
-
-SimpleWeightedProfileThreshold = 0.5;
-
 
 def ReadKinase():
 
@@ -39,13 +34,12 @@ _Interactions = Data["Interactions"];
 
 
 
-
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
 
 
-    NumOfDrugs = _Interactions.shape[0];
+    NumOfDrugs = Interactions.shape[0];
 
-    NumOfTargets = _Interactions.shape[1];
+    NumOfTargets = Interactions.shape[1];
 
     Numerator  = 0;
 
@@ -78,9 +72,9 @@ def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
 def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours):
 
 
-    NumOfDrugs = _Interactions.shape[0];
+    NumOfDrugs = Interactions.shape[0];
 
-    NumOfTargets = _Interactions.shape[1];
+    NumOfTargets = Interactions.shape[1];
 
     Numerator  = 0;
 
@@ -111,12 +105,12 @@ def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours):
 
 
 
-def SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+def SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,SimpleWeightedProfileThreshold):
 
 
-    NumOfDrugs = _Interactions.shape[0];
+    NumOfDrugs = Interactions.shape[0];
 
-    NumOfTargets = _Interactions.shape[1];
+    NumOfTargets = Interactions.shape[1];
 
     DrugBased   = DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours);
 
@@ -131,55 +125,35 @@ def SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,
     return 0;
 
 
-def SimpleWeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+def SimpleWeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,SimpleWeightedProfileThreshold):
 
 
-    NumOfDrugs = _Interactions.shape[0];
+    NumOfDrugs = Interactions.shape[0];
 
-    NumOfTargets = _Interactions.shape[1];
+    NumOfTargets = Interactions.shape[1];
 
-    NewInteractions = _Interactions.copy();
+    NewInteractions = Interactions.copy();
 
     for i in range(0,NumOfDrugs):
         for j in range(0,NumOfTargets):
 
-            if Interactions.iloc[i,j] == 0:
+            #if Interactions.iloc[i,j] == 0:
 
-                Pred = SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours);
+            Pred = SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,SimpleWeightedProfileThreshold);
 
-                NewInteractions.iloc[i,j] = Pred;
+            NewInteractions.iloc[i,j] = Pred;
 
     return NewInteractions;
 
 
-PredInteractionsMatrix = SimpleWeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,_NumOfNeighbours);
 
 
-def LeaveOneOutCrossValidation(DDSimilarity,TTSimilarity,PredInteractionsMatrix,NumOfNeighbours):
+
+PredInteractionsMatrix = SimpleWeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,2,0.5);
 
 
-    NumOfDrugs = _Interactions.shape[0];
 
-    NumOfTargets = _Interactions.shape[1];
-
-    Count = 0;
-
-    for i in range(0,NumOfDrugs):
-        for j in range(0,NumOfTargets):
-
-            Pred = SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,PredInteractionsMatrix,NumOfNeighbours);
-
-            if PredInteractionsMatrix.iloc[i,j] == Pred:
-
-                Count = Count + 1;
-
-
-    return Count;
-
-
-Count = LeaveOneOutCrossValidation(_DDSimilarity,_TTSimilarity,PredInteractionsMatrix,_NumOfNeighbours);
-
-print(Count);
+print(PredInteractionsMatrix)
 
 
             
