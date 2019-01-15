@@ -225,7 +225,7 @@ def DDMatrixJaccardSimilarity(Interactions):
 
 
     for i in range(0,NumOfDrugs):
-        for j in range(0,NumOfDrugs):
+        for j in range(i,NumOfDrugs):
 
             DDMatJaccardSimilarity.iloc[i,j] = DDJaccardSimilarity(Interactions,i,j,-1);
             
@@ -234,10 +234,33 @@ def DDMatrixJaccardSimilarity(Interactions):
     return DDMatJaccardSimilarity;
 
 
+def TTMatrixJaccardSimilarity(Interactions):
+
+
+    NumOfTargets = Interactions.shape[1];
+
+
+    TTMatJaccardSimilarity = pd.DataFrame(index=range(0,NumOfTargets),columns=range(0,NumOfTargets));
+
+
+    for i in range(0,NumOfTargets):
+        print(i)
+        for j in range(0,NumOfTargets):
+
+            if i == j:
+                TTMatJaccardSimilarity.iloc[i,j] = 1;
+            else:
+                TTMatJaccardSimilarity.iloc[i,j] = TTJaccardSimilarity(Interactions,i,j,-1);
+            
+   
+
+    return TTMatJaccardSimilarity;
 
 
 
-print(DDMatrixJaccardSimilarity(_Interactions))
+
+
+print(TTMatrixJaccardSimilarity(_Interactions))
 
 
 
