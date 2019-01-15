@@ -210,13 +210,53 @@ def DDJaccardSimilarity(Interactions,D1,D2,ExcludedTarget):
     return Similarity;
 
 
-                
-
-#PredInteractionsMatrix = SimpleWeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,2,0.5);
+def DrugToAllJaccardSimilarity(D,Interactions,ExcludedTarget):
 
 
+    NumOfDrugs = Interactions.shape[0];
 
-print(DDJaccardSimilarity(_Interactions,0,0,1))
+    Similarities = [];
+
+    for i in range(0,NumOfDrugs):
+
+        Sim = DDJaccardSimilarity(Interactions,D,i,ExcludedTarget);
+
+        Similarities.append(Sim);
+
+
+    return Similarities;
+
+
+def TargetToAllJaccardSimilarity(T,Interactions,ExcludedDrug):
+
+
+    NumOfTargets = Interactions.shape[1];
+
+    Similarities = [];
+
+    for i in range(0,NumOfTargets):
+
+        Sim = TTJaccardSimilarity(Interactions,T,i,ExcludedDrug);
+
+        Similarities.append(Sim);
+
+
+    return Similarities;
+
+
+
+print(TargetToAllJaccardSimilarity(0,_Interactions,1));
+
+
+    
+
+
+    
+
+    
+
+
+
 
 
             
