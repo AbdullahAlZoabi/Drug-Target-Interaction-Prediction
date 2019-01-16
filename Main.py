@@ -194,6 +194,7 @@ def DDMatrixJaccardSimilarity(Interactions):
 
 
     for i in range(0,NumOfDrugs):
+        print(i+1," of ",NumOfDrugs,".");
         for j in range(i,NumOfDrugs):
 
 
@@ -218,7 +219,7 @@ def TTMatrixJaccardSimilarity(Interactions):
 
 
     for i in range(0,NumOfTargets):
-        print(i)
+        print(i+1," of ",NumOfTargets,".");
         for j in range(0,NumOfTargets):
 
             if i == j:
@@ -236,7 +237,8 @@ def TTMatrixJaccardSimilarity(Interactions):
 
 #======================================================================
 
-Data = DataReadWrite.ReadKinase();
+
+Data = DataReadWrite.ReadOriginalKinase();
 
 
 _DDSimilarity = Data["DDSimilarity"];
@@ -248,10 +250,12 @@ _TTSimilarity = Data["TTSimilarity"];
 _Interactions = Data["Interactions"];
 
 
+DataReadWrite.WriteJaccardKinase(DDMatrixJaccardSimilarity(_Interactions),TTMatrixJaccardSimilarity(_Interactions));
+
+
 #print(WeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,2,0.5));
 
 
-print(DDMatrixJaccardSimilarity(_Interactions))
 
 
 
