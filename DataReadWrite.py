@@ -28,4 +28,17 @@ def WriteJaccardKinase(DDJaccardSimilarity,TTJaccardSimilarity):
 
     print("Done");
 
+
+def ReadJaccardKinase():
+
+    DDSimilarity = pd.read_csv("Datasets\\Kinase\\Kinase_JaccardDD.csv");
+
+    TTSimilarity = pd.read_csv("Datasets\\Kinase\\Kinase_JaccardTT.csv");
+
+    Interactions = pd.read_csv('Datasets\\Kinase\\Kinase_Interactions.txt', sep=" " , header = None);
+
+    Interactions = Interactions.drop([0], axis=1);
+
+    return {"DDSimilarity":DDSimilarity, "TTSimilarity":TTSimilarity, "Interactions":Interactions};
+
     

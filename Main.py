@@ -238,22 +238,43 @@ def TTMatrixJaccardSimilarity(Interactions):
 #======================================================================
 
 
-Data = DataReadWrite.ReadOriginalKinase();
+OriginalData = DataReadWrite.ReadOriginalKinase();
 
 
-_DDSimilarity = Data["DDSimilarity"];
+DDOriginalSimilarity = OriginalData["DDSimilarity"];
 
 
-_TTSimilarity = Data["TTSimilarity"];
+TTOriginalSimilarity = OriginalData["TTSimilarity"];
 
 
-_Interactions = Data["Interactions"];
+Interactions = OriginalData["Interactions"];
 
 
-DataReadWrite.WriteJaccardKinase(DDMatrixJaccardSimilarity(_Interactions),TTMatrixJaccardSimilarity(_Interactions));
+#Call this function once to calculate the Jaccard Similarities and write it to csv files 
+#DataReadWrite.WriteJaccardKinase(DDMatrixJaccardSimilarity(Interactions),TTMatrixJaccardSimilarity(Interactions));
 
 
-#print(WeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,2,0.5));
+JaccardData = DataReadWrite.ReadJaccardKinase();
+
+DDJaccardSimilarity = JaccardData["DDSimilarity"];
+
+TTJaccardSimilarity = JaccardData["TTSimilarity"];
+
+JaccardInteractions = JaccardData["Interactions"];
+
+
+
+
+PredInteractions1 = WeightedProfile(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,2,0.5);
+
+PredInteractions2 = WeightedProfile(DDJaccardSimilarity,TTJaccardSimilarity,JaccardInteractions,2,0.5);
+
+
+print(PredInteractions1);
+
+print("-----------------");
+
+print(PredInteractions2);
 
 
 
