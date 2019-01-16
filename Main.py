@@ -1,37 +1,6 @@
 import pandas as pd
 import numpy as np
-
-
-
-def ReadKinase():
-
-    DDSimilarity = pd.read_csv('Datasets\\Kinase_DD.txt', sep=" " , header = None);
-
-    DDSimilarity = DDSimilarity.drop([0], axis=1);
-
-    TTSimilarity = pd.read_csv('Datasets\\Kinase_TT.txt', sep=" " , header = None);
-
-    TTSimilarity = TTSimilarity.drop([0], axis=1);
-
-    Interactions = pd.read_csv('Datasets\\Kinase_Interactions.txt', sep=" " , header = None);
-
-    Interactions = Interactions.drop([0], axis=1);
-
-    return {"DDSimilarity":DDSimilarity, "TTSimilarity":TTSimilarity, "Interactions":Interactions};
-
-
-
-Data = ReadKinase();
-
-
-_DDSimilarity = Data["DDSimilarity"];
-
-
-_TTSimilarity = Data["TTSimilarity"];
-
-
-_Interactions = Data["Interactions"];
-
+import DataReadWrite
 
 
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
@@ -105,7 +74,7 @@ def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours):
 
 
 
-def SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,SimpleWeightedProfileThreshold):
+def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
 
 
     NumOfDrugs = Interactions.shape[0];
@@ -118,14 +87,14 @@ def SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,
 
     Mean = (DrugBased + TargetBased)/2;
 
-    if Mean >= SimpleWeightedProfileThreshold:
+    if Mean >= WeightedProfileThreshold:
 
         return 1;
 
     return 0;
 
 
-def SimpleWeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,SimpleWeightedProfileThreshold):
+def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
 
 
     NumOfDrugs = Interactions.shape[0];
@@ -139,7 +108,7 @@ def SimpleWeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours
 
             #if Interactions.iloc[i,j] == 0:
 
-            Pred = SimpleWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,SimpleWeightedProfileThreshold);
+            Pred = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours, WeightedProfileThreshold);
 
             NewInteractions.iloc[i,j] = Pred;
 
@@ -227,7 +196,12 @@ def DDMatrixJaccardSimilarity(Interactions):
     for i in range(0,NumOfDrugs):
         for j in range(i,NumOfDrugs):
 
-            DDMatJaccardSimilarity.iloc[i,j] = DDJaccardSimilarity(Interactions,i,j,-1);
+
+            if i == j:
+                DDMatJaccardSimilarity.iloc[i,j] = 1;
+            else:
+                DDMatJaccardSimilarity.iloc[i,j] = DDJaccardSimilarity(Interactions,i,j,-1);
+                DDMatJaccardSimilarity.iloc[j,i] = DDMatJaccardSimilarity.iloc[i,j];
             
    
 
@@ -251,6 +225,7 @@ def TTMatrixJaccardSimilarity(Interactions):
                 TTMatJaccardSimilarity.iloc[i,j] = 1;
             else:
                 TTMatJaccardSimilarity.iloc[i,j] = TTJaccardSimilarity(Interactions,i,j,-1);
+                TTMatJaccardSimilarity.iloc[j,i] = TTMatJaccardSimilarity.iloc[i,j];
             
    
 
@@ -259,8 +234,25 @@ def TTMatrixJaccardSimilarity(Interactions):
 
 
 
+#======================================================================
 
-print(TTMatrixJaccardSimilarity(_Interactions))
+Data = DataReadWrite.ReadKinase();
+
+
+_DDSimilarity = Data["DDSimilarity"];
+
+
+_TTSimilarity = Data["TTSimilarity"];
+
+
+_Interactions = Data["Interactions"];
+
+
+#print(WeightedProfile(_DDSimilarity,_TTSimilarity,_Interactions,2,0.5));
+
+
+print(DDMatrixJaccardSimilarity(_Interactions))
+
 
 
 
