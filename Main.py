@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 import DataReadWrite
-
+from sklearn.metrics import precision_recall_curve, roc_curve
+from sklearn.metrics import auc
 
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
 
@@ -232,6 +233,23 @@ def TTMatrixJaccardSimilarity(Interactions):
 
     return TTMatJaccardSimilarity;
 
+
+def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
+    
+        
+        scores = []
+        for d, t in Interactions:
+            score = WeightedProfileSingleEntry(d,t,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold)      
+            scores.append(score)
+            
+        
+        prec, rec, thr = precision_recall_curve(Interactions, scores)
+        aupr_val = auc(rec, prec)
+        fpr, tpr, thr = roc_curve(Interactions, scores)
+        auc_val = auc(fpr, tpr)
+        
+        #!!!!we should distinguish here between inverted and not inverted methods nDCGs!!!!
+        return aupr_val, auc_val
 
 
 
