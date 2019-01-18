@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 import DataReadWrite
-from sklearn.metrics import precision_recall_curve, roc_curve
-from sklearn.metrics import auc
-import matplotlib.pyplot as plt
+#from sklearn.metrics import precision_recall_curve, roc_curve
+#from sklearn.metrics import auc
+#import matplotlib.pyplot as plt
 
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
 
@@ -76,7 +76,7 @@ def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours):
 
 
 
-def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
+def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
 
 
     NumOfDrugs = Interactions.shape[0];
@@ -89,14 +89,10 @@ def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfN
 
     Mean = (DrugBased + TargetBased)/2;
 
-    if Mean >= WeightedProfileThreshold:
-
-        return 1;
-
-    return 0;
+    return Mean;
 
 
-def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
+def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
 
 
     NumOfDrugs = Interactions.shape[0];
@@ -110,7 +106,7 @@ def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,Weigh
 
             #if Interactions.iloc[i,j] == 0:
 
-            Pred = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours, WeightedProfileThreshold);
+            Pred = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours);
 
             NewInteractions.iloc[i,j] = Pred;
 
@@ -292,9 +288,9 @@ JaccardInteractions = JaccardData["Interactions"];
 
 
 
-PredInteractions1 = WeightedProfile(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,2,0.5);
+PredInteractions1 = WeightedProfile(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,2);
 
-PredInteractions2 = WeightedProfile(DDJaccardSimilarity,TTJaccardSimilarity,JaccardInteractions,2,0.5);
+PredInteractions2 = WeightedProfile(DDJaccardSimilarity,TTJaccardSimilarity,JaccardInteractions,2);
 
 
 print(PredInteractions1);
