@@ -3,6 +3,7 @@ import numpy as np
 import DataReadWrite
 from sklearn.metrics import precision_recall_curve, roc_curve
 from sklearn.metrics import auc
+import matplotlib.pyplot as plt
 
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
 
@@ -187,8 +188,8 @@ def DDJaccardSimilarity(Interactions,D1,D2,ExcludedTarget):
 
 def DDMatrixJaccardSimilarity(Interactions):
 
-
     NumOfDrugs = Interactions.shape[0];
+
 
 
     DDMatJaccardSimilarity = pd.DataFrame(index=range(0,NumOfDrugs),columns=range(0,NumOfDrugs));
@@ -235,21 +236,29 @@ def TTMatrixJaccardSimilarity(Interactions):
 
 
 def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
-    
-        
-        scores = []
-        for d, t in Interactions:
-            score = WeightedProfileSingleEntry(d,t,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold)      
+    NumOfDrugs = Interactions.shape[0];
+    NumOfTargets = Interactions.shape[1];
+
+    true_labels = []
+    scores = []
+
+    for i in range(0,NumOfTargets):
+        for j in range(i,NumOfDrugs):
+            label = Interactions.iloc[i,j]
+            true_labels.append(label)
+            score = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold)   
             scores.append(score)
-            
         
-        prec, rec, thr = precision_recall_curve(Interactions, scores)
-        aupr_val = auc(rec, prec)
-        fpr, tpr, thr = roc_curve(Interactions, scores)
-        auc_val = auc(fpr, tpr)
+    prec, rec, thr = precision_recall_curve(true_labels, scores)
+    aupr_val = auc(rec, prec)
+    fpr, tpr, thr = roc_curve(true_labels, scores)
+    auc_val = auc(fpr, tpr)
         
-        #!!!!we should distinguish here between inverted and not inverted methods nDCGs!!!!
-        return aupr_val, auc_val
+    plt.plot(fpr, tpr)
+    plt.plot(prec, rec)
+    plt.show()
+
+    return aupr_val, auc_val
 
 
 
@@ -295,7 +304,8 @@ print("-----------------");
 print(PredInteractions2);
 
 
-
+#test evaluation
+#aupr, auc = evaluation(DDOriginalSimilarity, TTOriginalSimilarity, Interactions,2,0.5)
 
 
 
