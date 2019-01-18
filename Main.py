@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 import DataReadWrite
-#from sklearn.metrics import precision_recall_curve, roc_curve
-#from sklearn.metrics import auc
-#import matplotlib.pyplot as plt
+from sklearn.metrics import precision_recall_curve, roc_curve
+from sklearn.metrics import auc
+import matplotlib.pyplot as plt
 
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
 
@@ -231,7 +231,7 @@ def TTMatrixJaccardSimilarity(Interactions):
     return TTMatJaccardSimilarity;
 
 
-def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
+def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
     NumOfDrugs = Interactions.shape[0];
     NumOfTargets = Interactions.shape[1];
 
@@ -242,7 +242,7 @@ def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedPr
         for j in range(i,NumOfDrugs):
             label = Interactions.iloc[i,j]
             true_labels.append(label)
-            score = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold)   
+            score = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours)   
             scores.append(score)
         
     prec, rec, thr = precision_recall_curve(true_labels, scores)
@@ -301,7 +301,7 @@ print(PredInteractions2);
 
 
 #test evaluation
-#aupr, auc = evaluation(DDOriginalSimilarity, TTOriginalSimilarity, Interactions,2,0.5)
+#aupr, auc = evaluation(DDOriginalSimilarity, TTOriginalSimilarity, Interactions,2)
 
 
 
