@@ -257,8 +257,7 @@ def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
         aupr_val = auc(rec, prec)
         fpr, tpr, thr = roc_curve(true_labels, scores)
         auc_val = auc(fpr, tpr)
-        
-        #!!!!we should distinguish here between inverted and not inverted methods nDCGs!!!!
+
         return aupr_val, auc_val
 
 
