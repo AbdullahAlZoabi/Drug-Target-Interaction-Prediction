@@ -3,7 +3,6 @@ import numpy as np
 import DataReadWrite
 #from sklearn.metrics import precision_recall_curve, roc_curve
 #from sklearn.metrics import auc
-#import matplotlib.pyplot as plt
 
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
 
@@ -76,7 +75,7 @@ def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours):
 
 
 
-def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
 
 
     NumOfDrugs = Interactions.shape[0];
@@ -89,10 +88,14 @@ def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfN
 
     Mean = (DrugBased + TargetBased)/2;
 
-    return Mean;
+    if Mean >= WeightedProfileThreshold:
+
+        return 1;
+
+    return 0;
 
 
-def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
 
 
     NumOfDrugs = Interactions.shape[0];
@@ -104,9 +107,9 @@ def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
     for i in range(0,NumOfDrugs):
         for j in range(0,NumOfTargets):
 
-            #if Interactions.iloc[i,j] == 0:
+            
 
-            Pred = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours);
+            Pred = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours, WeightedProfileThreshold);
 
             NewInteractions.iloc[i,j] = Pred;
 
@@ -184,8 +187,8 @@ def DDJaccardSimilarity(Interactions,D1,D2,ExcludedTarget):
 
 def DDMatrixJaccardSimilarity(Interactions):
 
-    NumOfDrugs = Interactions.shape[0];
 
+    NumOfDrugs = Interactions.shape[0];
 
 
     DDMatJaccardSimilarity = pd.DataFrame(index=range(0,NumOfDrugs),columns=range(0,NumOfDrugs));
@@ -232,29 +235,21 @@ def TTMatrixJaccardSimilarity(Interactions):
 
 
 def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
-    NumOfDrugs = Interactions.shape[0];
-    NumOfTargets = Interactions.shape[1];
-
-    true_labels = []
-    scores = []
-
-    for i in range(0,NumOfTargets):
-        for j in range(i,NumOfDrugs):
-            label = Interactions.iloc[i,j]
-            true_labels.append(label)
-            score = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold)   
+    
+        
+        scores = []
+        for d, t in Interactions:
+            score = WeightedProfileSingleEntry(d,t,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold)      
             scores.append(score)
+            
         
-    prec, rec, thr = precision_recall_curve(true_labels, scores)
-    aupr_val = auc(rec, prec)
-    fpr, tpr, thr = roc_curve(true_labels, scores)
-    auc_val = auc(fpr, tpr)
+        prec, rec, thr = precision_recall_curve(Interactions, scores)
+        aupr_val = auc(rec, prec)
+        fpr, tpr, thr = roc_curve(Interactions, scores)
+        auc_val = auc(fpr, tpr)
         
-    plt.plot(fpr, tpr)
-    plt.plot(prec, rec)
-    plt.show()
-
-    return aupr_val, auc_val
+        #!!!!we should distinguish here between inverted and not inverted methods nDCGs!!!!
+        return aupr_val, auc_val
 
 
 
@@ -288,9 +283,9 @@ JaccardInteractions = JaccardData["Interactions"];
 
 
 
-PredInteractions1 = WeightedProfile(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,2);
+PredInteractions1 = WeightedProfile(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,2,0.5);
 
-PredInteractions2 = WeightedProfile(DDJaccardSimilarity,TTJaccardSimilarity,JaccardInteractions,2);
+PredInteractions2 = WeightedProfile(DDJaccardSimilarity,TTJaccardSimilarity,JaccardInteractions,2,0.5);
 
 
 print(PredInteractions1);
@@ -300,8 +295,7 @@ print("-----------------");
 print(PredInteractions2);
 
 
-#test evaluation
-#aupr, auc = evaluation(DDOriginalSimilarity, TTOriginalSimilarity, Interactions,2,0.5)
+
 
 
 
