@@ -6,6 +6,7 @@ from sklearn.metrics import auc
 import matplotlib.pyplot as plt
 import statistics
 import math
+import HubnessAware
 
 
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
@@ -42,38 +43,7 @@ def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
     return Numerator/Denominator;
 
 
-def IDrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours,W):
 
-
-    NumOfDrugs = Interactions.shape[0];
-
-    NumOfTargets = Interactions.shape[1];
-
-    Numerator  = 0;
-
-    Denominator = 0;
-
-    SortedIndices = np.argsort(-DDSimilarity.iloc[i,:]);
-
-    Count = 0;
-
-    for k in range(0, NumOfDrugs):
-
-        CurrentIndex = SortedIndices.iloc[k,];
-
-        if CurrentIndex != i:
-
-            Numerator = Numerator + Interactions.iloc[CurrentIndex,j]*DDSimilarity.iloc[i,CurrentIndex]*W.iloc[j,CurrentIndex];
-
-            Denominator = Denominator + DDSimilarity.iloc[i,CurrentIndex]*W.iloc[j,CurrentIndex];
-
-            Count = Count + 1;
-
-            if Count == NumOfNeighbours:
-
-                break;
-
-    return Numerator/Denominator;
 
 
 
@@ -111,57 +81,13 @@ def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours):
     return Numerator/Denominator;
 
 
-def ITargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours,W):
-
-
-    NumOfDrugs = Interactions.shape[0];
-
-    NumOfTargets = Interactions.shape[1];
-
-    Numerator  = 0;
-
-    Denominator = 0;
-
-    SortedIndices = np.argsort(-TTSimilarity.iloc[j,:]);
-
-    Count = 0;
-
-    for k in range(0, NumOfTargets):
-
-        CurrentIndex = SortedIndices.iloc[k,];
-
-        if CurrentIndex != j:
-
-            Numerator = Numerator + Interactions.iloc[i,CurrentIndex]*TTSimilarity.iloc[j,CurrentIndex]*W.iloc[i,CurrentIndex];
-
-            Denominator = Denominator + TTSimilarity.iloc[j,CurrentIndex];
-
-            Count = Count + 1;
-
-            if Count == NumOfNeighbours:
-
-                break;
-
-    return Numerator/Denominator;
 
 
 
 
 
-def IWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,W1,W2):
 
 
-    NumOfDrugs = Interactions.shape[0];
-
-    NumOfTargets = Interactions.shape[1];
-
-    DrugBased   = IDrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours,W1);
-
-    TargetBased = ITargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours,W2);
-
-    Mean = (DrugBased + TargetBased)/2;
-
-    return Mean;
 
        
 def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
@@ -374,123 +300,15 @@ def TTMatrixJaccardSimilarity(Interactions):
     return TTMatJaccardSimilarity;
 
 
-def SingleDrugsRowWeighting(T,DDSimilarity,Interactions,NumOfNeighbours):
-
-
-    NumOfDrugs = Interactions.shape[0];
-
-    BN = [0] * NumOfDrugs;
-
-    for i in range(NumOfDrugs):
-
-        SortedIndices = np.argsort(-DDSimilarity.iloc[i,:]);
-
-        Count = 0;
-
-        for j in range(0,NumOfDrugs):
-
-            CurrentIndex = SortedIndices.iloc[j,];
-
-            if CurrentIndex != i:
-
-                if Interactions.iloc[i,T] != Interactions.iloc[CurrentIndex,T]:
-
-                    BN[CurrentIndex] = BN[CurrentIndex]+ 1;
-
-                Count = Count + 1;
-
-            if Count == NumOfNeighbours:
-                
-                break;
-
-
-    Mean = statistics.mean(BN);
-
-    StDev = statistics.stdev(BN);
-
-    for i in range(NumOfDrugs):
-        
-        if StDev == 0:
-            H = 0;
-        else:
-            H = (BN[i] - Mean)/StDev;
-
-        W = math.exp(-H);
-
-        BN[i] = W;
-
-    return(BN);
 
 
 
-def AllDrugsWeighting(DDSimilarity,Interactions,NumOfNeighbours):
 
 
-    NumOfDrugs = Interactions.shape[0];
-
-    NumOfTargets = Interactions.shape[1];
-
-    DrugsWeightes = pd.DataFrame(index=range(0,NumOfTargets),columns=range(0,NumOfDrugs));
-
-    for i in range(0,NumOfTargets):
-
-        Row = SingleDrugsRowWeighting(i,DDSimilarity,Interactions,NumOfNeighbours);
-
-        for j in range(0,NumOfDrugs):
-
-            DrugsWeightes.iloc[i,j] = Row[j];
-
-
-    return DrugsWeightes;
 
     
 
-def SingleTargetsColWeighting(D,TTSimilarity,Interactions,NumOfNeighbours):
 
-
-    NumOfTargets = Interactions.shape[1];
-
-    BN = [0] * NumOfTargets;
-
-    for i in range(NumOfTargets):
-
-        SortedIndices = np.argsort(-TTSimilarity.iloc[i,:]);
-
-        Count = 0;
-
-        for j in range(0,NumOfTargets):
-
-            CurrentIndex = SortedIndices.iloc[j,];
-
-            if CurrentIndex != i:
-
-                if Interactions.iloc[D,i] != Interactions.iloc[D,CurrentIndex]:
-
-                    BN[CurrentIndex] = BN[CurrentIndex]+ 1;
-
-                Count = Count + 1;
-
-            if Count == NumOfNeighbours:
-                
-                break;
-
-
-    Mean = statistics.mean(BN);
-
-    StDev = statistics.stdev(BN);
-
-    for i in range(NumOfTargets):
-        
-        if StDev == 0:
-            H = 0;
-        else:
-            H = (BN[i] - Mean)/StDev;
-
-        W = math.exp(-H);
-
-        BN[i] = W;
-
-    return(BN);
 
 
 
@@ -572,13 +390,13 @@ print("-----------------");
 
 
 #test evaluation
-aupr, auc = Ievaluation(DDJaccardSimilarity, TTJaccardSimilarity, JaccardInteractions,2)
+#aupr, auc = Ievaluation(DDJaccardSimilarity, TTJaccardSimilarity, JaccardInteractions,2)
 
-print(auc)
-print(aupr)
+#print(auc)
+#print(aupr)
 
 
-
+print(HubnessAware.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,2))
 
 #print(AllTargetsWeighting(TTOriginalSimilarity,Interactions,2));
 
