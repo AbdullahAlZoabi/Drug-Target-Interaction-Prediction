@@ -77,7 +77,7 @@ def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours):
 
 
 
-def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
+def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
 
 
     NumOfDrugs = Interactions.shape[0];
@@ -90,14 +90,10 @@ def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfN
 
     Mean = (DrugBased + TargetBased)/2;
 
-    if Mean >= WeightedProfileThreshold:
+    return Mean;
 
-        return 1;
-
-    return 0;
-
-
-def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
+       
+def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
 
 
     NumOfDrugs = Interactions.shape[0];
@@ -109,9 +105,7 @@ def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,Weigh
     for i in range(0,NumOfDrugs):
         for j in range(0,NumOfTargets):
 
-            
-
-            Pred = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours, WeightedProfileThreshold);
+            Pred = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours);
 
             NewInteractions.iloc[i,j] = Pred;
 
@@ -292,21 +286,24 @@ JaccardInteractions = JaccardData["Interactions"];
 
 
 
-PredInteractions1 = WeightedProfile(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,2,0.5);
+#PredInteractions1 = WeightedProfile(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,2,0.5);
 
-PredInteractions2 = WeightedProfile(DDJaccardSimilarity,TTJaccardSimilarity,JaccardInteractions,2,0.5);
+#PredInteractions2 = WeightedProfile(DDJaccardSimilarity,TTJaccardSimilarity,JaccardInteractions,2,0.5);
 
 
-print(PredInteractions1);
+#print(PredInteractions1);
 
 print("-----------------");
 
-print(PredInteractions2);
+#print(PredInteractions2);
 
 
 
 #test evaluation
-#aupr, auc = evaluation(DDOriginalSimilarity, TTOriginalSimilarity, Interactions,2)
+aupr, auc = evaluation(DDOriginalSimilarity, TTOriginalSimilarity, Interactions,2)
+
+print(auc)
+print(aupr)
 
 
 
