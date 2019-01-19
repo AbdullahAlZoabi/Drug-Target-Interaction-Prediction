@@ -296,7 +296,7 @@ print("-----------------");
 #print(aupr)
 
 
-print(SimpleWeightedProfile.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,3))
+print(HubnessAware.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,10))
 
 #print(AllTargetsWeighting(TTOriginalSimilarity,Interactions,2));
 

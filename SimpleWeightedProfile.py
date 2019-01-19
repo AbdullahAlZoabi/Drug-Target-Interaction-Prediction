@@ -107,7 +107,7 @@ def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
     NewInteractions = Interactions.copy();
 
     for i in range(0,NumOfDrugs):
-        print("Predicting .. ",i+1,"Of",NumOfDrugs)
+        print("Predicting ..",i+1,NumOfDrugs);
         for j in range(0,NumOfTargets):
 
             Pred = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours);
