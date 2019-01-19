@@ -232,23 +232,30 @@ def TTMatrixJaccardSimilarity(Interactions):
 
 
 def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+
     NumOfDrugs = Interactions.shape[0];
+
     NumOfTargets = Interactions.shape[1];
 
     true_labels = []
+
     scores = []
 
-    for i in range(0,NumOfTargets):
-        for j in range(i,NumOfDrugs):
+    for i in range(0,NumOfDrugs):
+        for j in range(0,NumOfTargets):
+            
             label = Interactions.iloc[i,j]
+
             true_labels.append(label)
+
             score = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours)   
+
             scores.append(score)
             
         
-        prec, rec, thr = precision_recall_curve(Interactions, scores)
+        prec, rec, thr = precision_recall_curve(true_labels, scores)
         aupr_val = auc(rec, prec)
-        fpr, tpr, thr = roc_curve(Interactions, scores)
+        fpr, tpr, thr = roc_curve(true_labels, scores)
         auc_val = auc(fpr, tpr)
         
         #!!!!we should distinguish here between inverted and not inverted methods nDCGs!!!!
