@@ -4,6 +4,8 @@ import DataReadWrite
 from sklearn.metrics import precision_recall_curve, roc_curve
 from sklearn.metrics import auc
 import matplotlib.pyplot as plt
+import statistics
+import math
 
 
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
@@ -30,6 +32,40 @@ def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
             Numerator = Numerator + Interactions.iloc[CurrentIndex,j]*DDSimilarity.iloc[i,CurrentIndex];
 
             Denominator = Denominator + DDSimilarity.iloc[i,CurrentIndex];
+
+            Count = Count + 1;
+
+            if Count == NumOfNeighbours:
+
+                break;
+
+    return Numerator/Denominator;
+
+
+def IDrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours,W):
+
+
+    NumOfDrugs = Interactions.shape[0];
+
+    NumOfTargets = Interactions.shape[1];
+
+    Numerator  = 0;
+
+    Denominator = 0;
+
+    SortedIndices = np.argsort(-DDSimilarity.iloc[i,:]);
+
+    Count = 0;
+
+    for k in range(0, NumOfDrugs):
+
+        CurrentIndex = SortedIndices.iloc[k,];
+
+        if CurrentIndex != i:
+
+            Numerator = Numerator + Interactions.iloc[CurrentIndex,j]*DDSimilarity.iloc[i,CurrentIndex]*W.iloc[j,CurrentIndex];
+
+            Denominator = Denominator + DDSimilarity.iloc[i,CurrentIndex]*W.iloc[j,CurrentIndex];
 
             Count = Count + 1;
 
@@ -75,18 +111,53 @@ def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours):
     return Numerator/Denominator;
 
 
-
-
-def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+def ITargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours,W):
 
 
     NumOfDrugs = Interactions.shape[0];
 
     NumOfTargets = Interactions.shape[1];
 
-    DrugBased   = DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours);
+    Numerator  = 0;
 
-    TargetBased = TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours);
+    Denominator = 0;
+
+    SortedIndices = np.argsort(-TTSimilarity.iloc[j,:]);
+
+    Count = 0;
+
+    for k in range(0, NumOfTargets):
+
+        CurrentIndex = SortedIndices.iloc[k,];
+
+        if CurrentIndex != j:
+
+            Numerator = Numerator + Interactions.iloc[i,CurrentIndex]*TTSimilarity.iloc[j,CurrentIndex]*W.iloc[i,CurrentIndex];
+
+            Denominator = Denominator + TTSimilarity.iloc[j,CurrentIndex];
+
+            Count = Count + 1;
+
+            if Count == NumOfNeighbours:
+
+                break;
+
+    return Numerator/Denominator;
+
+
+
+
+
+def IWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,W1,W2):
+
+
+    NumOfDrugs = Interactions.shape[0];
+
+    NumOfTargets = Interactions.shape[1];
+
+    DrugBased   = IDrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours,W1);
+
+    TargetBased = ITargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours,W2);
 
     Mean = (DrugBased + TargetBased)/2;
 
@@ -111,6 +182,79 @@ def WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
 
     return NewInteractions;
 
+
+
+def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+
+    NumOfDrugs = Interactions.shape[0];
+
+    NumOfTargets = Interactions.shape[1];
+
+    true_labels = []
+
+    scores = []
+
+    for i in range(0,NumOfDrugs):
+        for j in range(0,NumOfTargets):
+            
+            label = Interactions.iloc[i,j]
+
+            true_labels.append(label)
+
+            score = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours)
+
+            if score!=score:
+                scores.append(0)
+            else:
+                scores.append(score)
+            
+        
+        prec, rec, thr = precision_recall_curve(true_labels, scores)
+        aupr_val = auc(rec, prec)
+        fpr, tpr, thr = roc_curve(true_labels, scores)
+        auc_val = auc(fpr, tpr)
+        
+        #!!!!we should distinguish here between inverted and not inverted methods nDCGs!!!!
+        return aupr_val, auc_val
+
+
+
+def Ievaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+
+    NumOfDrugs = Interactions.shape[0];
+
+    NumOfTargets = Interactions.shape[1];
+
+    true_labels = []
+
+    scores = []
+
+    W1 = AllDrugsWeighting(DDSimilarity,Interactions,NumOfNeighbours);
+    W2 = AllTargetsWeighting(TTSimilarity,Interactions,NumOfNeighbours);
+
+    for i in range(0,NumOfDrugs):
+        for j in range(0,NumOfTargets):
+            
+            label = Interactions.iloc[i,j]
+
+            true_labels.append(label)
+
+            score = IWeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,W1,W2)
+
+            if score!=score:
+                scores.append(0)
+            else:
+                scores.append(score)
+            
+        
+        prec, rec, thr = precision_recall_curve(true_labels, scores)
+        aupr_val = auc(rec, prec)
+        fpr, tpr, thr = roc_curve(true_labels, scores)
+        auc_val = auc(fpr, tpr)
+        
+        #!!!!we should distinguish here between inverted and not inverted methods nDCGs!!!!
+        return aupr_val, auc_val
+    
 
 
 def TTJaccardSimilarity(Interactions,T1,T2,ExcludedDrug):
@@ -230,35 +374,157 @@ def TTMatrixJaccardSimilarity(Interactions):
     return TTMatJaccardSimilarity;
 
 
+def SingleDrugsRowWeighting(T,DDSimilarity,Interactions,NumOfNeighbours):
 
-def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+
+    NumOfDrugs = Interactions.shape[0];
+
+    BN = [0] * NumOfDrugs;
+
+    for i in range(NumOfDrugs):
+
+        SortedIndices = np.argsort(-DDSimilarity.iloc[i,:]);
+
+        Count = 0;
+
+        for j in range(0,NumOfDrugs):
+
+            CurrentIndex = SortedIndices.iloc[j,];
+
+            if CurrentIndex != i:
+
+                if Interactions.iloc[i,T] != Interactions.iloc[CurrentIndex,T]:
+
+                    BN[CurrentIndex] = BN[CurrentIndex]+ 1;
+
+                Count = Count + 1;
+
+            if Count == NumOfNeighbours:
+                
+                break;
+
+
+    Mean = statistics.mean(BN);
+
+    StDev = statistics.stdev(BN);
+
+    for i in range(NumOfDrugs):
+        
+        if StDev == 0:
+            H = 0;
+        else:
+            H = (BN[i] - Mean)/StDev;
+
+        W = math.exp(-H);
+
+        BN[i] = W;
+
+    return(BN);
+
+
+
+def AllDrugsWeighting(DDSimilarity,Interactions,NumOfNeighbours):
+
 
     NumOfDrugs = Interactions.shape[0];
 
     NumOfTargets = Interactions.shape[1];
 
-    true_labels = []
+    DrugsWeightes = pd.DataFrame(index=range(0,NumOfTargets),columns=range(0,NumOfDrugs));
 
-    scores = []
+    for i in range(0,NumOfTargets):
+
+        Row = SingleDrugsRowWeighting(i,DDSimilarity,Interactions,NumOfNeighbours);
+
+        for j in range(0,NumOfDrugs):
+
+            DrugsWeightes.iloc[i,j] = Row[j];
+
+
+    return DrugsWeightes;
+
+    
+
+def SingleTargetsColWeighting(D,TTSimilarity,Interactions,NumOfNeighbours):
+
+
+    NumOfTargets = Interactions.shape[1];
+
+    BN = [0] * NumOfTargets;
+
+    for i in range(NumOfTargets):
+
+        SortedIndices = np.argsort(-TTSimilarity.iloc[i,:]);
+
+        Count = 0;
+
+        for j in range(0,NumOfTargets):
+
+            CurrentIndex = SortedIndices.iloc[j,];
+
+            if CurrentIndex != i:
+
+                if Interactions.iloc[D,i] != Interactions.iloc[D,CurrentIndex]:
+
+                    BN[CurrentIndex] = BN[CurrentIndex]+ 1;
+
+                Count = Count + 1;
+
+            if Count == NumOfNeighbours:
+                
+                break;
+
+
+    Mean = statistics.mean(BN);
+
+    StDev = statistics.stdev(BN);
+
+    for i in range(NumOfTargets):
+        
+        if StDev == 0:
+            H = 0;
+        else:
+            H = (BN[i] - Mean)/StDev;
+
+        W = math.exp(-H);
+
+        BN[i] = W;
+
+    return(BN);
+
+
+
+def AllTargetsWeighting(TTSimilarity,Interactions,NumOfNeighbours):
+
+
+    NumOfDrugs = Interactions.shape[0];
+
+    NumOfTargets = Interactions.shape[1];
+
+    TargetsWeightes = pd.DataFrame(index=range(0,NumOfDrugs),columns=range(0,NumOfTargets));
 
     for i in range(0,NumOfDrugs):
+
+        Col = SingleTargetsColWeighting(i,TTSimilarity,Interactions,NumOfNeighbours);
+
         for j in range(0,NumOfTargets):
-            
-            label = Interactions.iloc[i,j]
 
-            true_labels.append(label)
+            TargetsWeightes.iloc[i,j] = Col[j];
 
-            score = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours)   
 
-            scores.append(score)
-            
-        
-        prec, rec, thr = precision_recall_curve(true_labels, scores)
-        aupr_val = auc(rec, prec)
-        fpr, tpr, thr = roc_curve(true_labels, scores)
-        auc_val = auc(fpr, tpr)
+    return TargetsWeightes;
 
-        return aupr_val, auc_val
+
+
+
+
+    
+
+
+
+
+
+
 
 
 
@@ -306,11 +572,15 @@ print("-----------------");
 
 
 #test evaluation
-aupr, auc = evaluation(DDOriginalSimilarity, TTOriginalSimilarity, Interactions,2)
+aupr, auc = Ievaluation(DDJaccardSimilarity, TTJaccardSimilarity, JaccardInteractions,2)
 
 print(auc)
 print(aupr)
 
+
+
+
+#print(AllTargetsWeighting(TTOriginalSimilarity,Interactions,2));
 
 
 
@@ -329,4 +599,7 @@ print(aupr)
         
 
     
+
+
+
 
