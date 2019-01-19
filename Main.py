@@ -1,8 +1,10 @@
 import pandas as pd
 import numpy as np
 import DataReadWrite
-#from sklearn.metrics import precision_recall_curve, roc_curve
-#from sklearn.metrics import auc
+from sklearn.metrics import precision_recall_curve, roc_curve
+from sklearn.metrics import auc
+import matplotlib.pyplot as plt
+
 
 def DrugBasedPrediction(i,j,DDSimilarity,Interactions,NumOfNeighbours):
 
@@ -234,12 +236,19 @@ def TTMatrixJaccardSimilarity(Interactions):
     return TTMatJaccardSimilarity;
 
 
-def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold):
-    
-        
-        scores = []
-        for d, t in Interactions:
-            score = WeightedProfileSingleEntry(d,t,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,WeightedProfileThreshold)      
+
+def evaluation(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
+    NumOfDrugs = Interactions.shape[0];
+    NumOfTargets = Interactions.shape[1];
+
+    true_labels = []
+    scores = []
+
+    for i in range(0,NumOfTargets):
+        for j in range(i,NumOfDrugs):
+            label = Interactions.iloc[i,j]
+            true_labels.append(label)
+            score = WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours)   
             scores.append(score)
             
         
@@ -296,6 +305,8 @@ print(PredInteractions2);
 
 
 
+#test evaluation
+#aupr, auc = evaluation(DDOriginalSimilarity, TTOriginalSimilarity, Interactions,2)
 
 
 
