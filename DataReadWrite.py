@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 def ReadOriginalKinase():
 
@@ -17,7 +18,26 @@ def ReadOriginalKinase():
 
     return {"DDSimilarity":DDSimilarity, "TTSimilarity":TTSimilarity, "Interactions":Interactions};
 
+def load_data_from_file(dataset, folder):
+    with open(os.path.join(folder, dataset+"_admat_dgc.txt"), "r") as inf:
+        inf.readline()
+        int_array = [line.strip("\n").split()[1:] for line in inf]
 
+    with open(os.path.join(folder, dataset+"_simmat_dc.txt"), "r") as inf:  # the drug similarity file
+        inf.readline()
+        drug_sim = [line.strip("\n").split()[1:] for line in inf]
+
+    with open(os.path.join(folder, dataset+"_simmat_dg.txt"), "r") as inf:  # the target similarity file
+        inf.readline()
+        target_sim = [line.strip("\n").split()[1:] for line in inf]
+
+    intMat = np.array(int_array, dtype=np.float64).T    # drug-target interaction matrix
+    drugMat = np.array(drug_sim, dtype=np.float64)      # drug similarity matrix
+    targetMat = np.array(target_sim, dtype=np.float64)  # target similarity matrix
+    intMat = pd.DataFrame(intMat)
+    drugMat = pd.DataFrame(drugMat)
+    targetMat = pd.DataFrame(targetMat)
+    return intMat, drugMat, targetMat
 
 def WriteJaccardKinase(DDMatrixJaccardSimilarityIntersection,DDMatrixJaccardSimilarityUnion,TTMatrixJaccardSimilarityIntersection,TTMatrixJaccardSimilarityUnion):
 
