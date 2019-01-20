@@ -319,25 +319,4 @@ def Run(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
     print("AUC : ", AUC);
 
     print("AUPR : ", AUPR);
-
     
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

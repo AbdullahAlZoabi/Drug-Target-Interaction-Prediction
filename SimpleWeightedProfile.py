@@ -78,7 +78,6 @@ def TargetBasedPrediction(i,j,TTSimilarity,Interactions,NumOfNeighbours):
 
 
 
-
 def WeightedProfileSingleEntry(i,j,DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
 
 
@@ -155,7 +154,7 @@ def Evaluation(Interactions,NewInteractions):
 
 def Run(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
 
-
+    
     Predictions = WeightedProfile(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours);
 
     print("Evaluating ...")
@@ -167,33 +166,4 @@ def Run(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
     print("AUC : ", AUC);
 
     print("AUPR : ", AUPR);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
