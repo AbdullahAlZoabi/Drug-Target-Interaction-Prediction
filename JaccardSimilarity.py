@@ -332,11 +332,11 @@ def Evaluation(Interactions,NewInteractions):
 def Run(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,Recalculate):
 
 
-    #I1,U1 = DDMatrixJaccardSimilarity(Interactions);
+    I1,U1 = DDMatrixJaccardSimilarity(Interactions);
 
-    #I2,U2 = TTMatrixJaccardSimilarity(Interactions);
+    I2,U2 = TTMatrixJaccardSimilarity(Interactions);
 
-    #DataReadWrite.WriteJaccardKinase(I1,U1,I2,U2);
+    DataReadWrite.WriteJaccard(I1,U1,I2,U2,"Datasets","NR");
 
     I1,U1,I2,U2,I = DataReadWrite.ReadJaccardKinase();
 

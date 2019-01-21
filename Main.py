@@ -32,7 +32,7 @@ import JaccardSimilarity
 InteractionsNR,DDSimilarityNR,TTSimilarityNR = DataReadWrite.load_data_from_file("nr", 'datasets')
 
 
-HubnessAware.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,5)  
+JaccardSimilarity.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,1,0)  
 
     
 

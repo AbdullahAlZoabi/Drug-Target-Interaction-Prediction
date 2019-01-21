@@ -39,16 +39,16 @@ def load_data_from_file(dataset, folder):
     targetMat = pd.DataFrame(targetMat)
     return intMat, drugMat, targetMat
 
-def WriteJaccardKinase(DDMatrixJaccardSimilarityIntersection,DDMatrixJaccardSimilarityUnion,TTMatrixJaccardSimilarityIntersection,TTMatrixJaccardSimilarityUnion):
+def WriteJaccard(DDMatrixJaccardSimilarityIntersection,DDMatrixJaccardSimilarityUnion,TTMatrixJaccardSimilarityIntersection,TTMatrixJaccardSimilarityUnion,Folder,Name):
 
 
-    DDMatrixJaccardSimilarityIntersection.to_csv("Datasets\\Kinase\\Kinase_JaccardDDIntersection.csv",index=False);
+    DDMatrixJaccardSimilarityIntersection.to_csv(Folder + "\\"+ Name +"_JaccardDDIntersection.csv",index=False);
 
-    DDMatrixJaccardSimilarityUnion.to_csv("Datasets\\Kinase\\Kinase_JaccardDDUnion.csv",index=False);
+    DDMatrixJaccardSimilarityUnion.to_csv(Folder + "\\"+ Name +"_JaccardDDUnion.csv",index=False);
     
-    TTMatrixJaccardSimilarityIntersection.to_csv("Datasets\\Kinase\\Kinase_JaccardTTIntersection.csv",index=False);
+    TTMatrixJaccardSimilarityIntersection.to_csv(Folder + "\\"+ Name +"_JaccardTTIntersection.csv",index=False);
 
-    TTMatrixJaccardSimilarityUnion.to_csv("Datasets\\Kinase\\Kinase_JaccardTTUnion.csv",index=False);
+    TTMatrixJaccardSimilarityUnion.to_csv(Folder + "\\"+ Name +"_JaccardTTUnion.csv",index=False);
 
     print("Done");
 
