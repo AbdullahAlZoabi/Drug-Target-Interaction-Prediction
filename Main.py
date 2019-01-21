@@ -22,7 +22,8 @@ TTOriginalSimilarity = OriginalData["TTSimilarity"];
 Interactions = OriginalData["Interactions"];
 
 
-print(SimpleWeightedProfile.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,5))
+print("5")
+print(JaccardSimilarity.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,5,0))
 
 
 
