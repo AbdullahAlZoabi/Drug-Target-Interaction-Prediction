@@ -22,29 +22,9 @@ TTOriginalSimilarity = OriginalData["TTSimilarity"];
 Interactions = OriginalData["Interactions"];
 
 
-#Call this function once to calculate the Jaccard Similarities and write it to csv files 
+print(SimpleWeightedProfile.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,5))
 
 
-#I1,U1 = JaccardSimilarity.DDMatrixJaccardSimilarity(Interactions);
-
-#I2,U2 = JaccardSimilarity.TTMatrixJaccardSimilarity(Interactions);
-
-#DataReadWrite.WriteJaccardKinase(I1,U1,I2,U2);
-
-
-#JaccardData = DataReadWrite.ReadJaccardKinase();
-
-#DDJaccardSimilarity = JaccardData["DDSimilarity"];
-
-#TTJaccardSimilarity = JaccardData["TTSimilarity"];
-
-#JaccardInteractions = JaccardData["Interactions"];
-
-
-
-print(JaccardSimilarity.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,3,0))
-
-#print(AllTargetsWeighting(TTOriginalSimilarity,Interactions,2));
 
 
 
