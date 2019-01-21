@@ -23,7 +23,7 @@ Interactions = OriginalData["Interactions"];
 
 
 print("5")
-print(JaccardSimilarity.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,5,0))
+print(JaccardSimilarity.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,5,1))
 
 
 
