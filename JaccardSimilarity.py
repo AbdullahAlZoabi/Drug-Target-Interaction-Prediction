@@ -191,6 +191,9 @@ def DrugBasedPrediction(i,j,DDSimilarityIntersection,DDSimilarityUnion,Interacti
 
                 break;
 
+    if Denominator == 0:
+        return 0;
+    
     return Numerator/Denominator;
 
 
@@ -252,6 +255,9 @@ def TargetBasedPrediction(i,j,TTSimilarityIntersection,TTSimilarityUnion,Interac
 
                 break;
 
+    if Denominator == 0:
+        return 0;
+
     return Numerator/Denominator;
 
 
@@ -310,10 +316,8 @@ def Evaluation(Interactions,NewInteractions):
 
             Score = NewInteractions.iloc[i,j];
             
-            if Score!=Score:
-                Scores.append(0)
-            else:
-                Scores.append(Score)
+            
+            Scores.append(Score)
             
         
         prec, rec, thr = precision_recall_curve(TruelLabels, Scores)
@@ -345,6 +349,8 @@ def Run(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,Recalculate,Datas
     Predictions = WeightedProfile(I1,U1,I2,U2,Interactions,NumOfNeighbours,Recalculate);
 
     print("Evaluating ...")
+
+    print(Predictions)
 
     AUC , AUPR = Evaluation(Interactions,Predictions);
 
