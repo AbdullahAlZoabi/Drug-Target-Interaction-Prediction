@@ -329,18 +329,20 @@ def Evaluation(Interactions,NewInteractions):
 
 
 
-def Run(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,Recalculate):
+def Run(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours,Recalculate,Dataset,Gen):
 
 
-    I1,U1 = DDMatrixJaccardSimilarity(Interactions);
+    if Gen == 1:
 
-    I2,U2 = TTMatrixJaccardSimilarity(Interactions);
+        I1,U1 = DDMatrixJaccardSimilarity(Interactions);
 
-    DataReadWrite.WriteJaccard(I1,U1,I2,U2,"Datasets","NR");
+        I2,U2 = TTMatrixJaccardSimilarity(Interactions);
 
-    I1,U1,I2,U2,I = DataReadWrite.ReadJaccardKinase();
+        DataReadWrite.WriteJaccard(I1,U1,I2,U2,"Datasets",Dataset);
 
-    Predictions = WeightedProfile(I1,U1,I2,U2,I,NumOfNeighbours,Recalculate);
+    I1,U1,I2,U2 = DataReadWrite.ReadJaccard("Datasets",Dataset);
+
+    Predictions = WeightedProfile(I1,U1,I2,U2,Interactions,NumOfNeighbours,Recalculate);
 
     print("Evaluating ...")
 

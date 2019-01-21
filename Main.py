@@ -22,7 +22,7 @@ import JaccardSimilarity
 
 #Interactions = OriginalData["Interactions"];
 
-#JaccardSimilarity.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,5,1)
+#JaccardSimilarity.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,1,0,"Kinase",0)
 
 
 
@@ -32,7 +32,7 @@ import JaccardSimilarity
 InteractionsNR,DDSimilarityNR,TTSimilarityNR = DataReadWrite.load_data_from_file("nr", 'datasets')
 
 
-JaccardSimilarity.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,1,0)  
+JaccardSimilarity.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,1,0,"NR",0)
 
     
 

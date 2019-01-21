@@ -4,15 +4,15 @@ import os
 
 def ReadOriginalKinase():
 
-    DDSimilarity = pd.read_csv('Datasets\\Kinase\\Kinase_OriginalDD.txt', sep=" " , header = None);
+    DDSimilarity = pd.read_csv('Datasets\\Kinase_OriginalDD.txt', sep=" " , header = None);
 
     DDSimilarity = DDSimilarity.drop([0], axis=1);
 
-    TTSimilarity = pd.read_csv('Datasets\\Kinase\\Kinase_OriginalTT.txt', sep=" " , header = None);
+    TTSimilarity = pd.read_csv('Datasets\\Kinase_OriginalTT.txt', sep=" " , header = None);
 
     TTSimilarity = TTSimilarity.drop([0], axis=1);
 
-    Interactions = pd.read_csv('Datasets\\Kinase\\Kinase_Interactions.txt', sep=" " , header = None);
+    Interactions = pd.read_csv('Datasets\\Kinase_Interactions.txt', sep=" " , header = None);
 
     Interactions = Interactions.drop([0], axis=1);
 
@@ -53,20 +53,16 @@ def WriteJaccard(DDMatrixJaccardSimilarityIntersection,DDMatrixJaccardSimilarity
     print("Done");
 
 
-def ReadJaccardKinase():
+def ReadJaccard(Folder,Name):
 
-    DDSimilarityIntersection = pd.read_csv("Datasets\\Kinase\\Kinase_JaccardDDIntersection.csv");
+    DDSimilarityIntersection = pd.read_csv(Folder + "\\"+ Name +"_JaccardDDIntersection.csv");
 
-    DDSimilarityUnion = pd.read_csv("Datasets\\Kinase\\Kinase_JaccardDDUnion.csv");
+    DDSimilarityUnion = pd.read_csv(Folder + "\\"+ Name +"_JaccardDDUnion.csv");
 
-    TTSimilarityIntersection = pd.read_csv("Datasets\\Kinase\\Kinase_JaccardTTIntersection.csv");
+    TTSimilarityIntersection = pd.read_csv(Folder + "\\"+ Name +"_JaccardTTIntersection.csv");
 
-    TTSimilarityUnion = pd.read_csv("Datasets\\Kinase\\Kinase_JaccardTTUnion.csv");   
+    TTSimilarityUnion = pd.read_csv(Folder + "\\"+ Name +"_JaccardTTUnion.csv");   
 
-    Interactions = pd.read_csv('Datasets\\Kinase\\Kinase_Interactions.txt', sep=" " , header = None);
-
-    Interactions = Interactions.drop([0], axis=1);
-
-    return DDSimilarityIntersection,DDSimilarityUnion,TTSimilarityIntersection,TTSimilarityUnion,Interactions;
+    return DDSimilarityIntersection,DDSimilarityUnion,TTSimilarityIntersection,TTSimilarityUnion;
 
     
