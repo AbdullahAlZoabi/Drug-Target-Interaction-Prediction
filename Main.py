@@ -49,9 +49,19 @@ import JaccardSimilarity
 #======================================================================================= GPCR
 
 
-Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("gpcr", 'datasets')
+#Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("gpcr", 'datasets')
 
 
+#HubnessAware.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
+
+
+
+#======================================================================================= Ion Channels
+
+
+Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("ic", 'datasets')
+
+print("6")
 HubnessAware.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
 
 
