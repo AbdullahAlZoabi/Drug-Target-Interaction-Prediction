@@ -11,19 +11,19 @@ import SimpleWeightedProfile
 import JaccardSimilarity
 
 
-
+# Uncomment one dataset pertime 
 #======================================================================================  Kinase
 
-OriginalData = DataReadWrite.ReadOriginalKinase();
+#OriginalData = DataReadWrite.ReadOriginalKinase();
 
-DDOriginalSimilarity = OriginalData["DDSimilarity"];
+#DDOriginalSimilarity = OriginalData["DDSimilarity"];
 
-TTOriginalSimilarity = OriginalData["TTSimilarity"];
+#TTOriginalSimilarity = OriginalData["TTSimilarity"];
 
-Interactions = OriginalData["Interactions"];
+#Interactions = OriginalData["Interactions"];
 
 
-SimpleWeightedProfile.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,6);
+#SimpleWeightedProfile.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,6);
 
 
 #HubnessAware.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,6);
@@ -33,10 +33,13 @@ SimpleWeightedProfile.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions
 #======================================================================================= Nuclear Receptors (NR)
 
 
-#InteractionsNR,DDSimilarityNR,TTSimilarityNR = DataReadWrite.load_data_from_file("nr", 'datasets')
+InteractionsNR,DDSimilarityNR,TTSimilarityNR = DataReadWrite.load_data_from_file("nr", 'datasets')
 
 
-#HubnessAware.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,2)
+#SimpleWeightedProfile.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,6)
+
+
+HubnessAware.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,6)
 
 
 
