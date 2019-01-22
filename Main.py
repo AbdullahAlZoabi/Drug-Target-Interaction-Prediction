@@ -33,13 +33,13 @@ import JaccardSimilarity
 #======================================================================================= Nuclear Receptors (NR)
 
 
-InteractionsNR,DDSimilarityNR,TTSimilarityNR = DataReadWrite.load_data_from_file("nr", 'datasets')
+#InteractionsNR,DDSimilarityNR,TTSimilarityNR = DataReadWrite.load_data_from_file("nr", 'datasets')
 
 
 #SimpleWeightedProfile.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,6)
 
 
-HubnessAware.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,6)
+#HubnessAware.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,6)
 
 
 
@@ -49,10 +49,10 @@ HubnessAware.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,6)
 #======================================================================================= GPCR
 
 
-#Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("gpcr", 'datasets')
+Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("gpcr", 'datasets')
 
 
-#JaccardSimilarity.Run(DDSimilarity ,TTSimilarity ,Interactions ,1,1,"gpcr",0)
+HubnessAware.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
 
 
 
