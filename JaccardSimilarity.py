@@ -316,20 +316,19 @@ def Evaluation(Interactions,NewInteractions):
 
             Score = NewInteractions.iloc[i,j];
             
-            
             Scores.append(Score)
             
         
-        prec, rec, thr = precision_recall_curve(TruelLabels, Scores)
+    prec, rec, thr = precision_recall_curve(TruelLabels, Scores)
         
-        aupr_val = auc(rec, prec)
+    aupr_val = auc(rec, prec)
 
-        fpr, tpr, thr = roc_curve(TruelLabels, Scores)
+    fpr, tpr, thr = roc_curve(TruelLabels, Scores)
 
-        auc_val = auc(fpr, tpr)
+    auc_val = auc(fpr, tpr)
         
 
-        return auc_val,aupr_val
+    return auc_val,aupr_val
 
 
 

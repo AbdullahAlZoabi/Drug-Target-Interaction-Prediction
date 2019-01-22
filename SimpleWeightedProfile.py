@@ -134,22 +134,18 @@ def Evaluation(Interactions,NewInteractions):
 
             Score = NewInteractions.iloc[i,j];
             
-            if Score!=Score:
-                Scores.append(0)
-            else:
-                Scores.append(Score)
-            
-        
-        prec, rec, thr = precision_recall_curve(TruelLabels, Scores)
-        
-        aupr_val = auc(rec, prec)
+            Scores.append(Score)
 
-        fpr, tpr, thr = roc_curve(TruelLabels, Scores)
-
-        auc_val = auc(fpr, tpr)
+    
+    prec, rec, thr = precision_recall_curve(TruelLabels, Scores)
         
+    aupr_val = auc(rec, prec)
 
-        return auc_val,aupr_val
+    fpr, tpr, thr = roc_curve(TruelLabels, Scores)
+
+    auc_val = auc(fpr, tpr)
+        
+    return auc_val,aupr_val
 
 
 def Run(DDSimilarity,TTSimilarity,Interactions,NumOfNeighbours):
