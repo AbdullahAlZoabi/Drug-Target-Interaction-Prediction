@@ -59,10 +59,20 @@ import JaccardSimilarity
 #======================================================================================= Ion Channels
 
 
-Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("ic", 'datasets')
+#Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("ic", 'datasets')
+
+
+#HubnessAware.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
+
+
+#======================================================================================= Enzyme
+
+
+Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("e", 'datasets')
+
 
 print("6")
-HubnessAware.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
+SimpleWeightedProfile.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
 
 
 
