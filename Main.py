@@ -14,25 +14,29 @@ import JaccardSimilarity
 
 #======================================================================================  Kinase
 
-#OriginalData = DataReadWrite.ReadOriginalKinase();
+OriginalData = DataReadWrite.ReadOriginalKinase();
 
-#DDOriginalSimilarity = OriginalData["DDSimilarity"];
+DDOriginalSimilarity = OriginalData["DDSimilarity"];
 
-#TTOriginalSimilarity = OriginalData["TTSimilarity"];
+TTOriginalSimilarity = OriginalData["TTSimilarity"];
 
-#Interactions = OriginalData["Interactions"];
+Interactions = OriginalData["Interactions"];
 
-#JaccardSimilarity.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,1,0,"Kinase",0)
+
+SimpleWeightedProfile.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,6);
+
+
+#HubnessAware.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,6);
 
 
 
 #======================================================================================= Nuclear Receptors (NR)
 
 
-InteractionsNR,DDSimilarityNR,TTSimilarityNR = DataReadWrite.load_data_from_file("nr", 'datasets')
+#InteractionsNR,DDSimilarityNR,TTSimilarityNR = DataReadWrite.load_data_from_file("nr", 'datasets')
 
 
-HubnessAware.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,2)
+#HubnessAware.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,2)
 
 
 
