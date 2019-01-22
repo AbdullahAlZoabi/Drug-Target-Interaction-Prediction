@@ -71,8 +71,14 @@ import JaccardSimilarity
 Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("e", 'datasets')
 
 
-print("6")
-SimpleWeightedProfile.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
+k = 6
+
+print(k)
+
+#SimpleWeightedProfile.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
+
+
+HubnessAware.Run(DDSimilarity ,TTSimilarity ,Interactions ,3)
 
 
 
