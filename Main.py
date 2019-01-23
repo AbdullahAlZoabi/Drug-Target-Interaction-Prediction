@@ -19,11 +19,11 @@ Datasets = ["Enzyme","Ion Channels","GPCR","NR","Kinase"];
 
 GenerateJaccardSimilarity = 0; # set 1 to generate. but all the data is already generated
 
-NumberOfNeighbours = 6;
+NumberOfNeighbours = 3;
 
-SelectedDataset = "Ion Channels";
+SelectedDataset = "Kinase";
 
-SelectedMethod = "JaccardWPWithRecalculating";
+SelectedMethod = "SimpleWP";
 
 
 #--------------------------------------------------------------------------
