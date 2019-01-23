@@ -11,74 +11,116 @@ import SimpleWeightedProfile
 import JaccardSimilarity
 
 
-# Uncomment one dataset pertime 
-#======================================================================================  Kinase
+Mthods = ["SimpleWP", "H-awareWP","JaccardWP","JaccardWPWithRecalculating"];
 
-#OriginalData = DataReadWrite.ReadOriginalKinase();
+Datasets = ["Enzyme","Ion Channels","GPCR","NR","Kinase"];
 
-#DDOriginalSimilarity = OriginalData["DDSimilarity"];
+#--------------------------------------------------------------------------- Change this section only to run an experiment
 
-#TTOriginalSimilarity = OriginalData["TTSimilarity"];
+GenerateJaccardSimilarity = 0; # set 1 to generate. but all the data is already generated
 
-#Interactions = OriginalData["Interactions"];
+NumberOfNeighbours = 6;
 
+SelectedDataset = "Ion Channels";
 
-#SimpleWeightedProfile.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,6);
-
-
-#HubnessAware.Run(DDOriginalSimilarity,TTOriginalSimilarity,Interactions,6);
+SelectedMethod = "JaccardWPWithRecalculating";
 
 
+#--------------------------------------------------------------------------
+print("Number Of Neighbours : ",NumberOfNeighbours);
 
-#======================================================================================= Nuclear Receptors (NR)
+print("Dataset : ",SelectedDataset);
 
-
-#InteractionsNR,DDSimilarityNR,TTSimilarityNR = DataReadWrite.load_data_from_file("nr", 'datasets')
-
-
-#SimpleWeightedProfile.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,6)
+print("Method : ",SelectedMethod);
 
 
-#HubnessAware.Run(DDSimilarityNR,TTSimilarityNR,InteractionsNR,6)
+#---------------------------------------------------------------------------
+
+
+if SelectedDataset == "Kinase":
+
+    Data = DataReadWrite.ReadOriginalKinase();
+
+    DDSimilarity = Data["DDSimilarity"];
+
+    TTSimilarity = Data["TTSimilarity"];
+
+    Interactions = Data["Interactions"];
+
+    if SelectedMethod == "SimpleWP":
+        SimpleWeightedProfile.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours);
+    if SelectedMethod == "H-awareWP":
+        HubnessAware.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours);
+    if SelectedMethod == "JaccardWP":
+        JaccardSimilarity.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours,0,"Kinase",GenerateJaccardSimilarity)
+    if SelectedMethod == "JaccardWPWithRecalculating":
+        JaccardSimilarity.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours,1,"Kinase",GenerateJaccardSimilarity)
+    
+
+
+
+if SelectedDataset == "NR":
+
+
+    Interactions, DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("nr", 'datasets')
+
+    if SelectedMethod == "SimpleWP":
+        SimpleWeightedProfile.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours);
+    if SelectedMethod == "H-awareWP":
+        HubnessAware.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours);
+    if SelectedMethod == "JaccardWP":
+        JaccardSimilarity.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours,0,"nr",GenerateJaccardSimilarity)
+    if SelectedMethod == "JaccardWPWithRecalculating":
+        JaccardSimilarity.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours,1,"nr",GenerateJaccardSimilarity)
+
+
+
+if SelectedDataset == "GPCR":
+
+
+    Interactions, DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("gpcr", 'datasets')
+
+    if SelectedMethod == "SimpleWP":
+        SimpleWeightedProfile.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours);
+    if SelectedMethod == "H-awareWP":
+        HubnessAware.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours);
+    if SelectedMethod == "JaccardWP":
+        JaccardSimilarity.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours,0,"gpcr",GenerateJaccardSimilarity)
+    if SelectedMethod == "JaccardWPWithRecalculating":
+        JaccardSimilarity.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours,1,"gpcr",GenerateJaccardSimilarity)
+
+
+
+if SelectedDataset == "Ion Channels":
+
+
+    Interactions, DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("ic", 'datasets')
+
+    if SelectedMethod == "SimpleWP":
+        SimpleWeightedProfile.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours);
+    if SelectedMethod == "H-awareWP":
+        HubnessAware.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours);
+    if SelectedMethod == "JaccardWP":
+        JaccardSimilarity.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours,0,"ic",GenerateJaccardSimilarity)
+    if SelectedMethod == "JaccardWPWithRecalculating":
+        JaccardSimilarity.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours,1,"ic",GenerateJaccardSimilarity)
 
 
 
 
+if SelectedDataset == "Enzyme":
 
 
-#======================================================================================= GPCR
+    Interactions, DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("e", 'datasets')
 
-
-#Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("gpcr", 'datasets')
-
-
-#HubnessAware.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
-
-
-
-#======================================================================================= Ion Channels
-
-
-#Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("ic", 'datasets')
-
-
-#HubnessAware.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
-
-
-#======================================================================================= Enzyme
-
-
-Interactions ,DDSimilarity ,TTSimilarity  = DataReadWrite.load_data_from_file("e", 'datasets')
-
-
-k = 6
-
-print(k)
-
-#SimpleWeightedProfile.Run(DDSimilarity ,TTSimilarity ,Interactions ,6)
-
-
-HubnessAware.Run(DDSimilarity ,TTSimilarity ,Interactions ,3)
+    if SelectedMethod == "SimpleWP":
+        SimpleWeightedProfile.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours);
+    if SelectedMethod == "H-awareWP":
+        HubnessAware.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours);
+    if SelectedMethod == "JaccardWP":
+        JaccardSimilarity.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours,0,"e",GenerateJaccardSimilarity)
+    if SelectedMethod == "JaccardWPWithRecalculating":
+        JaccardSimilarity.Run(DDSimilarity,TTSimilarity,Interactions,NumberOfNeighbours,1,"e",GenerateJaccardSimilarity)
 
 
 
